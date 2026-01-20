@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import numpy as np  # ✅ FIX 1: required for NaN handling
 
 # 🔑 REQUIRED FOR PICKLE (DO NOT REMOVE)
 from preprocessing_utils import to_string
@@ -66,6 +67,10 @@ def job_label(x):
         2: "Skilled",
         3: "Highly Skilled"
     }[x]
+
+# ✅ FIX 2: Normalize NA values to match training data
+def clean_na(val):
+    return np.nan if val == "NA" else val
 
 # ----------------------------------
 # 5. Sidebar
@@ -167,8 +172,8 @@ if st.button("🔍 Predict Credit Risk", use_container_width=True):
         "Sex": sex,
         "Job": job,
         "Housing": housing,
-        "Saving accounts": saving_accounts,
-        "Checking account": checking_account,
+        "Saving accounts": clean_na(saving_accounts),   # ✅ FIX
+        "Checking account": clean_na(checking_account), # ✅ FIX
         "Purpose": purpose
     }])
 
